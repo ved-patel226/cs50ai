@@ -5,7 +5,9 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 
 
-'''
+"""
+
+training
 
 mnist = tf.keras.datasets.mnist
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -26,21 +28,20 @@ model.fit(x_train, y_train, epochs=3)
 
 model.save('handwritten.keras')
 
-'''
+"""
 
-model = tf.keras.models.load_model('handwritten.keras')
+model = tf.keras.models.load_model("handwritten.keras")
 
 image_number = 1
-while os.path.isfile(f'imgs/{image_number}.png'):
+while os.path.isfile(f"imgs/{image_number}.png"):
     try:
-        img = cv2.imread(f'imgs/{image_number}.png')[:, :, 0]
+        img = cv2.imread(f"imgs/{image_number}.png")[:, :, 0]
         img = np.invert(np.array([img]))
         prediction = model.predict(img)
-        print('The number is probably:', np.argmax(prediction))
+        print("The number is probably:", np.argmax(prediction))
         plt.imshow(img[0], cmap=plt.cm.binary)
         plt.show()
     except:
-        print('error')
+        print("error")
     finally:
-        image_number +=1
-
+        image_number += 1
