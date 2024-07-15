@@ -201,18 +201,18 @@ class MinesweeperAI:
 
         if len(new_sentence.cells) > 0:
             self.knowledge.append(new_sentence)
-            # print(colored(f"Adding new sentence: {new_sentence}", "green"))
+            print(colored(f"Adding new sentence: {new_sentence}", "green"))
 
-        # print(colored("Printing knowledge:", "blue"))
+        print(colored("Printing knowledge:", "blue"))
         for sent in self.knowledge:
-            # print(sent)
+            print(sent)
             pass
 
-        # check sentences for new cells that could be marked as safe or as mine
+        #check sentences for new cells that could be marked as safe or as mine
         self.check_knowledge()
-        # print(colored(f"Safe cells: {self.safes - self.moves_made}", "yellow"))
-        # print(colored(f"Mine cells: {self.mines}", "red"))
-        # print(colored("------------", "blue"))
+        print(colored(f"Safe cells: {self.safes - self.moves_made}", "yellow"))
+        print(colored(f"Mine cells: {self.mines}", "red"))
+        print(colored("------------", "blue"))
 
         self.extra_inference()
 
@@ -250,12 +250,12 @@ class MinesweeperAI:
             # update knowledge if mine or safe was found
             if mines:
                 for mine in mines:
-                    # print(colored(f"Marking {mine} as mine", "red"))
+                    print(colored(f"Marking {mine} as mine", "red"))
                     self.mark_mine(mine)
                     self.check_knowledge()
             if safes:
                 for safe in safes:
-                    # print(colored(f"Marking {safe} as safe", "green"))
+                    print(colored(f"Marking {safe} as safe", "green"))
                     self.mark_safe(safe)
                     self.check_knowledge()
 
@@ -273,18 +273,18 @@ class MinesweeperAI:
                     safes = new_sentence.known_safes()
                     if mines:
                         for mine in mines:
-                            # print(
-                            #     colored(f"Used inference to mark mine: {mine}", "red")
-                            # )
-                            # print(colored(f"FinalSen: {new_sentence}", "blue"))
+                            print(
+                                colored(f"Used inference to mark mine: {mine}", "red")
+                            )
+                            print(colored(f"FinalSen: {new_sentence}", "blue"))
                             self.mark_mine(mine)
 
                     if safes:
                         for safe in safes:
-                            # print(
-                            #     colored(f"Used inference to mark safe: {safe}", "green")
-                            # )
-                            # print(colored(f"FinalSen: {new_sentence}", "blue"))
+                            print(
+                                colored(f"Used inference to mark safe: {safe}", "green")
+                            )
+                            print(colored(f"FinalSen: {new_sentence}", "blue"))
                             self.mark_safe(safe)
 
     def make_safe_move(self):
@@ -297,7 +297,7 @@ class MinesweeperAI:
         and self.moves_made, but should not modify any of those values.
         """
         for i in self.safes - self.moves_made:
-            # print(colored(f"Making {i} move", "green"))
+            print(colored(f"Making {i} move", "green"))
             return i
 
         return None
@@ -325,15 +325,15 @@ class MinesweeperAI:
 
     def print(self, num):
         if num == 0:
-            # print(colored("No moves left to make.", "red"))
-            # print(colored("......", "red"))
+            print(colored("No moves left to make.", "red"))
+            print(colored("......", "red"))
             pass
 
         if num == 1:
-            # print(colored("No known safe moves, AI making random move.", "red"))
-            # print(colored("......", "red"))
+            print(colored("No known safe moves, AI making random move.", "red"))
+            print(colored("......", "red"))
             pass
         if num == 2:
-            # print(colored("AI making safe move.", "red"))
-            # print(colored("......", "red"))
+            print(colored("AI making safe move.", "red"))
+            print(colored("......", "red"))
             pass
