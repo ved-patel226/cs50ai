@@ -120,52 +120,43 @@ def joint_probability(people, one_gene, two_genes, have_trait):
     probability = 1
 
     for person in people:
-        if person in one_gene:
-            gene = 1
-        elif person in two_genes:
-            gene = 2
+        gene_number = 1 if person in one_gene else 2 if person in two_genes else 0
+        trait = True if person in have_trait else False
+
+        gene_numb_prop = PROBS["gene"][gene_number]
+        trait_prop = PROBS["trait"][gene_number][trait]
+
+        if people[person]["mother"] is None:
+            # no parents, use probability distribution
+            probability *= gene_numb_prop * trait_prop
         else:
-            gene = 0
+            # info about parents is available
+            mother = people[person]["mother"]
+            father = people[person]["father"]
+            percentages = {}
 
-        if person in have_trait:
-            trait = True
-        else:
-            trait = False
-
-        gene_probability = PROBS["gene"][gene]
-        trait_probability = PROBS["trait"][gene][trait]
-
-        if people[person]["mother"] == None:
-            probability *= gene_probability * trait_probability
-
-        else:
-
-            mom = people[person]["mother"]
-            dad = people[person]["father"]
-
-            dictperc = {}
-
-            for ppl in [mom, dad]:
-                if ppl in one_gene:
-                    perc = 0 + PROBS["mutation"]
-
-                elif ppl in two_genes:
-                    perc = 0.5
-                else:
-                    perc = 1 - PROBS["mutation"]
-
-                dictperc[ppl] = perc
-
-            if gene == 0:
-                probability *= (1 - dictperc[mom]) * (1 - dictperc[dad])
-            elif gene == 1:
-                probability *= (1 - dictperc[mom]) * dictperc[dad] + dictperc[mom] * (
-                    1 - dictperc[dad]
+            for ppl in [mother, father]:
+                number = 1 if ppl in one_gene else 2 if ppl in two_genes else 0
+                perc = (
+                    0 + PROBS["mutation"]
+                    if number == 0
+                    else 0.5 if number == 1 else 1 - PROBS["mutation"]
                 )
-            else:
-                probability *= dictperc[mom] * dictperc[dad]
+                percentages[ppl] = perc
 
-            probability *= trait_probability
+            if gene_number == 0:
+                # 0, none of parents gave gene
+                probability *= (1 - percentages[mother]) * (1 - percentages[father])
+            elif gene_number == 1:
+                # 1, one of parents gave gene
+                probability *= (1 - percentages[mother]) * percentages[
+                    father
+                ] + percentages[mother] * (1 - percentages[father])
+            else:
+                # 2, both of parents gave gene
+                probability *= percentages[mother] * percentages[father]
+
+            probability *= trait_prop
 
     return probability
 
@@ -179,14 +170,13 @@ def update(probabilities, one_gene, two_genes, have_trait, p):
     """
 
     for person in probabilities:
-        if person in one_gene:
-            gene = 1
-        if person in two_genes:
-            gene = 2
+        gene_number = 1 if person in one_gene else 2 if person in two_genes else 0
+        if gene_number == 0:
+            probabilities[person]["gene"][0] += p
+        elif gene_number == 1:
+            probabilities[person]["gene"][1] += p
         else:
-            gene = 0
-
-        probabilities[person]["gene"][gene] += p
+            probabilities[person]["gene"][2] += p
         probabilities[person]["trait"][person in have_trait] += p
 
 
@@ -197,14 +187,13 @@ def normalize(probabilities):
     """
 
     normalized = probabilities.copy()
-
     for person in probabilities:
         for typ in ["gene", "trait"]:
             summed = sum(probabilities[person][typ].values())
-            for catagory in probabilities[person][typ]:
-                val = normalized[person][typ][catagory]
+            for category in probabilities[person][typ]:
+                val = probabilities[person][typ][category]
                 normalized_val = val / summed
-                normalized[person][typ][catagory] = normalized_val
+                normalized[person][typ][category] = normalized_val
     return normalized
 
 
