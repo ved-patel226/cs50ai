@@ -189,5 +189,3 @@ def minimax(board):
 
     else:
         return min_value(board)[1]
-
-    raise NotImplementedError
