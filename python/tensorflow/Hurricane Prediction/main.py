@@ -6,6 +6,8 @@ import tensorflow as tf
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import KBinsDiscretizer
 
+# quit because of lack of data
+
 
 class hurricane:
     def __init__(self):
